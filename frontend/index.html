@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Homepage</h1>
+    <form action="" id="myForm">
+        <p>
+        <label for="first">First Name:</label>
+        <input type="text" name="first" id="first" placeholder="First Name" minlength="1" maxlength="100" required>
+        </p>
+        <p>
+        <label for="last">Last Name:</label>
+        <input type="text" name="last" id="last" placeholder="Last Name" minlength="1" maxlength="100" required>
+        </p>
+        <p>
+        <label for="middle">Middle Name:</label>
+        <input type="text" name="middle" id="middle" placeholder="Middle Name" minlength="1" maxlength="100">
+        </p>
+        <p>
+        <label for="phone">Phone Number:</label>
+        <input type="number" name="phone" id="phone" placeholder="Phone Number" required>
+        </p>
+        <p>
+        <label for="obrashenie">Obrashenie:</label>
+        <br>
+        <textarea name="obrashenie" id="obrashenie" cols="30" rows="10" placeholder="Enter the text"></textarea>
+        </p>
+        <p>
+        <button type="submit" id="send-button">Send</button>
+        </p>
+    </form>
+
+    <script type="text/javascript">
+        
+        const formEl = document.querySelector('form');
+        formEl.addEventListener('submit', (e) => {
+        
+        e.preventDefault();
+        
+        const formData = new FormData(formEl);
+
+        const data = Object.fromEntries(formData);
+
+        fetch('https://reqres.in/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+            
+        })  .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+        });
+
+    </script>
+    
+</body>
+</html>

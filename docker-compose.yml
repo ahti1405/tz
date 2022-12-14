@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.8-management-alpine
+    environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+        # AMQP protocol port
+        - '5672:5672'
+        # HTTP management UI
+        - '15672:15672'
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 80:80
+
+  backend:
+    build: ./backend
+    command: python trndo.py
+    volumes:
+      - ./backend/:/code/
+    ports:
+      - 8888:8888
+    depends_on:
+      - frontend
+      - rabbitmq
+
+  servicedb:
+    build: ./servicedb
+    command: uvicorn main:app --reload 
+    volumes:
+      - ./servicedb/:/code/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - rabbitmq
+
+  db:
+    image: postgres:14
+    container_name: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=pg_user
+      - POSTGRES_PASSWORD=pg_password
+      - POSTGRES_DB=db_name
+
+volumes:
+  postgres_data:
+  
